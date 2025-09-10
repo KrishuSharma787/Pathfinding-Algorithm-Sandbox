@@ -15,7 +15,7 @@
 <p align="center">
   
   <br>
-  <em>A* algorithm navigating a randomly generated maze.</em>
+
 </p>
 
 ---
