@@ -44,19 +44,19 @@ This application is built exclusively with standard Python libraries, ensuring h
 
 ## Key Features
 
-#### ✅ Core Algorithms Implemented
+#### Core Algorithms Implemented
 * **A\* Search:** Utilizes the Manhattan distance heuristic to find the shortest path in an optimal manner.
 * **Dijkstra's Algorithm:** Guarantees the shortest path from the start to all other nodes.
 * **Breadth-First Search (BFS):** An unweighted algorithm ideal for finding the shortest path in terms of the number of cells.
 * **Depth-First Search (DFS):** Explores as far as possible down each branch before backtracking, finding a path but not necessarily the shortest one.
 
-#### ✅ Interactive User Interface
+#### Interactive User Interface
 * **Dynamic Grid:** A fully interactive grid where users can draw walls, and set custom start and end points.
 * **Real-time Drawing:** Click or drag the mouse to create complex obstacles and patterns on the grid.
 * **Maze Generation:** Implements a randomized Depth-First Search algorithm to generate intricate mazes with a single click.
 * **Responsive Controls:** A clean and intuitive control panel for algorithm selection and grid manipulation.
 
-#### ✅ User Experience
+#### User Experience
 * **Status Bar:** Provides instant feedback on the selected algorithm, number of cells visited, path length, and execution time in milliseconds.
 * **Keyboard Shortcuts:** Optimized for power users with intuitive keybindings for all major functions.
 * **Modular & Clean UI:** A modern interface built using themed Tkinter widgets for a professional look and feel.
@@ -76,7 +76,7 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repository:**
     ```sh
-    git clone [https://github.com/your-username/pathfinding-visualizer.git](https://github.com/your-username/pathfinding-visualizer.git)
+    git clone [https://github.com/KrishuSharma787/Pathfinding-Algorithm-Sandbox.git](https://github.com/KrishuSharma787/Pathfinding-Algorithm-Sandbox.git)
     cd pathfinding-visualizer
     ```
 
