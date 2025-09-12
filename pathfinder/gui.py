@@ -1,11 +1,11 @@
 # pathfinder/gui.py
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import time
 import random
 
 from .constants import *
-from .grid import Grid, UnionFind
+from .grid import Grid
 from . import algorithms
 
 class App:
@@ -103,7 +103,6 @@ class App:
         rect_id = self.cell_widgets[r][c]
         color = COLOR_EMPTY
         
-        # Determine color based on priority
         if path and (r, c) in path: color = COLOR_PATH
         elif (r, c) == self.grid.start: color = COLOR_START
         elif (r, c) == self.grid.end: color = COLOR_END
@@ -143,7 +142,6 @@ class App:
             self.last_drag_cell = (r, c)
             if self.mode == "wall":
                 if (r, c) != self.grid.start and (r, c) != self.grid.end:
-                    # To allow erasing by dragging, we check the state
                     if (r,c) not in self.grid.walls:
                         self.grid.walls.add((r, c))
                         self._update_cell_color(r, c)
@@ -161,7 +159,7 @@ class App:
         
         algo_func = self.algorithms.get(self.algorithm_name.get())
         if not algo_func:
-            self.status.config(text="Error: Algorithm not found.")
+            messagebox.showerror("Error", "Algorithm not found.")
             self.running = False
             return
 
@@ -170,8 +168,17 @@ class App:
         end_time = time.time()
         runtime_ms = int((end_time - start_time) * 1000)
         
+        # Check if the path is empty and show a pop-up
+        if not path and self.grid.start != self.grid.end:
+            messagebox.showinfo(
+                "Path Not Found", 
+                "No path could be found from the start to the end node."
+            )
+        
         self.draw_grid(visited, path)
-        self.status.config(text=f"Algorithm: {self.algorithm_name.get()} | Visited: {len(visited)} | Path: {len(path)} | Time: {runtime_ms} ms")
+        self.status.config(
+            text=f"Algorithm: {self.algorithm_name.get()} | Visited: {len(visited)} | Path: {len(path)} | Time: {runtime_ms} ms"
+        )
         self.running = False
 
     def clear_walls(self):
@@ -186,10 +193,6 @@ class App:
         self.status.config(text="Grid has been reset.")
         self.set_mode("wall")
 
-    # pathfinder/gui.py
-
-# ... (inside the App class) ...
-
     def generate_maze(self):
         if self.running: return
         self.reset()
@@ -200,14 +203,12 @@ class App:
                 self.grid.walls.add((r,c))
 
         # 2. Carve a perfect maze using randomized DFS (Recursive Backtracker)
-        # This ensures all carved paths are connected.
         walls_to_remove = set()
-        stack = [(0,0)] # Start carving from the top-left
+        stack = [(0,0)]
         visited_maze = {(0,0)}
 
         while stack:
             r, c = stack[-1]
-            # Find unvisited neighbors 2 steps away
             neighbors = []
             for dr, dc in [(0, 2), (0, -2), (2, 0), (-2, 0)]:
                 nr, nc = r + dr, c + dc
@@ -215,28 +216,22 @@ class App:
                     neighbors.append((nr, nc))
             
             if neighbors:
-                # Choose a random neighbor and carve a path to it
                 nr, nc = random.choice(neighbors)
                 wall_between = (r + (nr-r)//2, c + (nc-c)//2)
-                
                 walls_to_remove.add((nr,nc))
                 walls_to_remove.add(wall_between)
-                
                 visited_maze.add((nr, nc))
                 stack.append((nr, nc))
             else:
-                # Backtrack
                 stack.pop()
 
         self.grid.walls -= walls_to_remove
 
-        # 3. NEW: Explicitly clear a 1-block radius around the end node.
-        # This guarantees the end point is always open and accessible.
+        # 3. Explicitly clear a 1-block radius around the end node.
         end_r, end_c = self.grid.end
-        for dr in range(-1, 2):  # Iterates through -1, 0, 1
-            for dc in range(-1, 2):  # Iterates through -1, 0, 1
+        for dr in range(-1, 2):
+            for dc in range(-1, 2):
                 nr, nc = end_r + dr, end_c + dc
-                # Check if the cell is within bounds and is a wall
                 if self.grid.in_bounds(nr, nc) and (nr, nc) in self.grid.walls:
                     self.grid.walls.remove((nr, nc))
         
