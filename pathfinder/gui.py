@@ -1,6 +1,6 @@
 # pathfinder/gui.py
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox #JW
 import time
 import random
 
